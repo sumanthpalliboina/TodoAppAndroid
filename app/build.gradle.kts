@@ -65,6 +65,8 @@ dependencies {
 
     implementation("com.airbnb.android:lottie:$lottieVersion")
 
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
     /*implementation("com.android.support:appcompat-v7:27.1.1")
     implementation("com.android.support:recyclerview-v7:27.1.1")
     implementation("com.android.support:support-core-ui:27.1.1")*/

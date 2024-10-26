@@ -22,6 +22,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.sumanthacademy.myapplication.ViewModel.TodoLive
 import com.sumanthacademy.myapplication.ViewModel.TodoViewModel
 import com.sumanthacademy.myapplication.databinding.ActivityMainBinding
+import java.util.Collections
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListener,OnTodoDeleteClickListener {
 
@@ -53,6 +55,13 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         todoViewModel = ViewModelProvider(this).get(TodoViewModel::class.java)
         todoViewModel.deletedData.observe(this){ it ->
             Toast.makeText(this,"${it.todo.title} is deleted",Toast.LENGTH_SHORT).show()
+        }
+
+        activityMainBinding.swipeRefreshLayout.setOnRefreshListener {
+            activityMainBinding.swipeRefreshLayout.isRefreshing = false
+            Collections.shuffle(this.todoItems, java.util.Random(System.currentTimeMillis()))
+            SPUtil.saveTodos(this.todoItems)
+            todoAdapter.notifyDataSetChanged()
         }
     }
 
