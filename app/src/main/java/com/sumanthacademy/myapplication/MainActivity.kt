@@ -194,8 +194,15 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
             val deleteFragment = DeleteFragment.newInstance(position,item)
             if (fragmentManager != null) {
                 deleteFragment.show(fragmentManager,DeleteFragment.TAG)
+                //deleteFragment.isCancelable = false
             }
         }
+    }
+
+    fun deleteTodo(position: Int){
+        this.todoItems.removeAt(position)
+        todoAdapter.removeTodo(position)
+        SPUtil.saveTodos(this.todoItems)
     }
 
     fun showBottomSheetDialogForDelete(position:Int){
@@ -217,9 +224,7 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
 
         deleteBtn.setOnClickListener{
             todoViewModel.deletedData.value = TodoLive(true,this.todoItems[position])
-            this.todoItems.removeAt(position)
-            todoAdapter.removeTodo(position)
-            SPUtil.saveTodos(this.todoItems)
+            deleteTodo(position)
             dialog.dismiss()
         }
 
