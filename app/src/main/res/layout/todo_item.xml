@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemTodo"
+    android:background="@drawable/card_todo_bg"
+    android:orientation="vertical"
+    android:elevation="5dp"
+    android:layout_margin="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/todoDetails"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_weight="0.2"
+            android:id="@+id/profile"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:src="@drawable/sumanth_photo_qqqzsw"
+            app:civ_border_width="2dp"
+            android:layout_margin="10dp"
+            app:civ_border_color="#FFFFFF" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content">
+
+            <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="USA"
+            android:maxLines="3"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeStepGranularity="2sp"
+            android:textColor="@android:color/white"
+            android:textStyle="italic|bold" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="The very political ruling country"
+                android:maxLines="3"
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="4sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeStepGranularity="2sp"
+                android:ellipsize="end"
+                android:textColor="@android:color/white"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/delIcon"
+            android:clickable="true"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.1"
+            android:src="@drawable/baseline_delete_24"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

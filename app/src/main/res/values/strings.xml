@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="helllo">
+        Welecome to app
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="intro_text">
+        Welcome to our Todo App! Add, Delete, Update your todos Status.
+    </string>
+    <string name="intro_title">Todo App</string>
+</resources>
