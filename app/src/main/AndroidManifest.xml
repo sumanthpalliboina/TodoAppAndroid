@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -35,6 +37,8 @@
         </activity>
 
         <service android:name=".PlayerServiceExample"/>
+
+        <receiver android:name=".receivers.NotificationReceiver" />
 
         <!--<receiver android:name=".CustomReceiverExample" android:exported="true">
             <intent-filter>

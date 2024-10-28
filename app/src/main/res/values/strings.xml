@@ -9,4 +9,6 @@
         Welcome to our Todo App! Add, Delete, Update your todos Status.
     </string>
     <string name="intro_title">Todo App</string>
+    <string name="update_todo_hint">Status is either inProgress or Completed or Not Started Yet</string>
+    <string name="intro_notification_text">If you want to manage your todos efficiently, Do it in this famous Todos App?</string>
 </resources>

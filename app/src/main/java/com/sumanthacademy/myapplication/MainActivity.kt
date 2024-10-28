@@ -1,9 +1,18 @@
 package com.sumanthacademy.myapplication
 
+import android.Manifest
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -13,24 +22,37 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.sumanthacademy.myapplication.ViewModel.TodoLive
+import com.sumanthacademy.myapplication.ViewModel.TodoRemainder
 import com.sumanthacademy.myapplication.ViewModel.TodoViewModel
 import com.sumanthacademy.myapplication.databinding.ActivityMainBinding
+import com.sumanthacademy.myapplication.receivers.NotificationReceiver
+import java.util.Calendar
 import java.util.Collections
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListener,OnTodoDeleteClickListener {
+class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListener,OnTodoDeleteClickListener,OnTodoRemainderClickListener {
 
     lateinit var activityMainBinding: ActivityMainBinding
     var todoItems:ArrayList<Todo> = ArrayList<Todo>()
     lateinit var todoAdapter:TodoAdapter
     private lateinit var todoViewModel: TodoViewModel
+
+    private final val CHANNEL_ID = "1"
+    lateinit var notificationMangerCompat:NotificationManagerCompat
+    lateinit var builder:NotificationCompat.Builder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +66,7 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         persistTodos()
         activityMainBinding.todosRecyclerView.setHasFixedSize(false)
         activityMainBinding.todosRecyclerView.itemAnimator = null
-        todoAdapter = TodoAdapter(this,todoItems,this,this)
+        todoAdapter = TodoAdapter(this,todoItems,this,this,this)
         activityMainBinding.todosRecyclerView.adapter = todoAdapter
 
         setListeners()
@@ -56,6 +78,11 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         todoViewModel.deletedData.observe(this){ it ->
             Toast.makeText(this,"${it.todo.title} is deleted",Toast.LENGTH_SHORT).show()
         }
+        todoViewModel.remainderData.observe(this){ it ->
+            if (it.isSet == true) {
+                Toast.makeText(this,"${it.todo.title} todo remainder attached to alarm. you will be notified soon",Toast.LENGTH_LONG).show()
+            }
+        }
 
         activityMainBinding.swipeRefreshLayout.setOnRefreshListener {
             activityMainBinding.swipeRefreshLayout.isRefreshing = false
@@ -63,6 +90,8 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
             SPUtil.saveTodos(this.todoItems)
             todoAdapter.notifyDataSetChanged()
         }
+
+        startLocalNotification()
     }
 
     fun setLayoutManger(){
@@ -124,6 +153,57 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         snackbar.view.setBackgroundColor(Color.RED)
         snackbar.setTextColor(Color.WHITE)
         snackbar.show()
+    }
+
+    fun startLocalNotification(){
+        var notificationCount = 1
+        builder = NotificationCompat.Builder(this@MainActivity,CHANNEL_ID)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID,"1",NotificationManager.IMPORTANCE_DEFAULT)
+            val manager:NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+            builder.setSmallIcon(R.drawable.todos_animation)
+                .setContentTitle("Do Your Todos")
+                .setContentText("If you want to manage your todos efficiently, Do it in this famous Todos App?")
+                .setLargeIcon(resources.getDrawable(R.drawable.mind).toBitmap())
+                .setContentIntent(PendingIntent.getActivity(applicationContext,0,Intent(applicationContext,MainActivity::class.java),PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+                .setAutoCancel(true)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(resources.getString(R.string.intro_notification_text)))
+        } else {
+            builder.setSmallIcon(R.drawable.todos_animation)
+                .setContentTitle("Do Your Todos")
+                .setContentText("Do you want to finish your todos?")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(PendingIntent.getActivity(applicationContext,0,Intent(applicationContext,MainActivity::class.java),PendingIntent.FLAG_UPDATE_CURRENT))
+                .setAutoCancel(true)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(resources.getString(R.string.intro_notification_text)))
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf((Manifest.permission.POST_NOTIFICATIONS)),1)
+            return
+        }
+        with(NotificationManagerCompat.from(this@MainActivity)){
+            notify(notificationCount++,builder.build())
+        }
+    }
+
+    /*handle the case where the user grants the permission*/
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1 && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+        } else {
+            Toast.makeText(this@MainActivity,"post notification permissions are not accepted",Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onStart() {
@@ -247,6 +327,40 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         dialog.setCancelable(true) //false -> this will prevent the user drag down the dialog to dismiss
         dialog.setCanceledOnTouchOutside(false)
         dialog.show()
+    }
+
+    fun setTodoRemainderTimeWithBroadcast(todo:Todo, hour:Int, minute:Int){
+        var calendar = Calendar.getInstance()
+        calendar = calendar.setExactHrAndMinute(hour,minute)
+        val intent = Intent(applicationContext,NotificationReceiver::class.java)
+        intent.putExtra("name",todo.title)
+        intent.putExtra("progress",todo.status)
+        val notificationId = System.currentTimeMillis().toInt()
+        val pendingIntent = if (Build.VERSION.SDK_INT >= 23) {
+            PendingIntent.getBroadcast(applicationContext,notificationId,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getBroadcast(applicationContext,notificationId,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+        val alarmManager:AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,AlarmManager.INTERVAL_DAY,pendingIntent)
+        todoViewModel.remainderData.value = TodoRemainder(true,todo)
+    }
+
+    override fun todoRemainderClickListener(position: Int) {
+        var item = todoItems[position]
+        val calendar = Calendar.getInstance()
+        val currentHr = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMin = calendar.get(Calendar.MINUTE)
+        val timePicker = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_12H)
+            .setHour(currentHr)
+            .setMinute(currentMin)
+            .setTitleText("Set Todo Remainder")
+            .build()
+        timePicker.show(supportFragmentManager,"TimePicker")
+        timePicker.addOnPositiveButtonClickListener {
+            setTodoRemainderTimeWithBroadcast(item,timePicker.hour, timePicker.minute)
+        }
     }
 
 }

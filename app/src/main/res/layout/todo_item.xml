@@ -63,6 +63,15 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/remainderIcon"
+            android:src="@drawable/baseline_alarm_24"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
             android:id="@+id/delIcon"
             android:clickable="true"
             android:layout_gravity="center_vertical"

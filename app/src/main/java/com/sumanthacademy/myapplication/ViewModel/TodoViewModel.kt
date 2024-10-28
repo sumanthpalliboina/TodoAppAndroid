@@ -9,6 +9,12 @@ data class TodoLive(
     var todo: Todo
 )
 
+data class TodoRemainder(
+    var isSet:Boolean,
+    var todo:Todo
+)
+
 class TodoViewModel : ViewModel() {
     var deletedData = MutableLiveData<TodoLive>()
+    var remainderData = MutableLiveData<TodoRemainder>()
 }

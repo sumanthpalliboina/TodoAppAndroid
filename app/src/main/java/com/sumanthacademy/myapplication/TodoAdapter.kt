@@ -23,13 +23,15 @@ class TodoAdapter(
     val context: Context,
     val itemsList:ArrayList<Todo>,
     private var todoClickListener:OnTodoClickListener,
-    private var onDeleteTodoClickListener:OnTodoDeleteClickListener
+    private var onDeleteTodoClickListener:OnTodoDeleteClickListener,
+    private var onTodoRemainderClickListener:OnTodoRemainderClickListener
     ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class TodoViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val title = itemView.findViewById<TextView>(R.id.title)
         val status = itemView.findViewById<TextView>(R.id.status)
         val deleteIcon = itemView.findViewById<ImageView>(R.id.delIcon)
+        val remainderIcon = itemView.findViewById<ImageView>(R.id.remainderIcon)
         val itemTodo = itemView.findViewById<RelativeLayout>(R.id.itemTodo)
         init {
             itemView.setSafeOnClickListener {
@@ -46,6 +48,14 @@ class TodoAdapter(
                 absoluteAdapterPosition.let {
                     if (it > -1 && itemsList.isNotEmpty()){
                         onDeleteTodoClickListener.deleteTodoClickListener(it)
+                    }
+                }
+            }
+
+            remainderIcon.setSafeOnClickListener {
+                absoluteAdapterPosition.let {
+                    if (it > -1 && itemsList.isNotEmpty()) {
+                        onTodoRemainderClickListener.todoRemainderClickListener(it)
                     }
                 }
             }
@@ -83,6 +93,14 @@ class TodoAdapter(
                                 it.deleteIcon.setImageDrawable(wrappedDrawable)
                             }
                         }
+                        context?.let { it1 ->
+                            var drawable = AppCompatResources.getDrawable(it1,R.drawable.baseline_alarm_24)
+                            drawable?.let{ it2 ->
+                                var wrappedDrawable = DrawableCompat.wrap(it2)
+                                DrawableCompat.setTint(wrappedDrawable,ContextCompat.getColor(it1,R.color.black))
+                                it.remainderIcon.setImageDrawable(wrappedDrawable)
+                            }
+                        }
                     }
                     "inProgress".lowercase() -> {
                         context?.let { it1 ->
@@ -100,6 +118,14 @@ class TodoAdapter(
                                 it.deleteIcon.setImageDrawable(wrappedDrawable)
                             }
                         }
+                        context?.let { it1 ->
+                            var drawable = AppCompatResources.getDrawable(it1,R.drawable.baseline_alarm_24)
+                            drawable?.let{ it2 ->
+                                var wrappedDrawable = DrawableCompat.wrap(it2)
+                                DrawableCompat.setTint(wrappedDrawable,ContextCompat.getColor(it1,R.color.white))
+                                it.remainderIcon.setImageDrawable(wrappedDrawable)
+                            }
+                        }
                     }
                     "Completed".lowercase() -> {
                         context?.let { it1 ->
@@ -115,6 +141,14 @@ class TodoAdapter(
                                 var wrappedDrawable = DrawableCompat.wrap(it2)
                                 DrawableCompat.setTint(wrappedDrawable,ContextCompat.getColor(it1,R.color.white))
                                 it.deleteIcon.setImageDrawable(wrappedDrawable)
+                            }
+                        }
+                        context?.let { it1 ->
+                            var drawable = AppCompatResources.getDrawable(it1,R.drawable.baseline_alarm_24)
+                            drawable?.let{ it2 ->
+                                var wrappedDrawable = DrawableCompat.wrap(it2)
+                                DrawableCompat.setTint(wrappedDrawable,ContextCompat.getColor(it1,R.color.white))
+                                it.remainderIcon.setImageDrawable(wrappedDrawable)
                             }
                         }
                     }
