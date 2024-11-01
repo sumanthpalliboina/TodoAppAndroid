@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sumanthacademy.myapplication.ViewModel.TodoLive
@@ -23,12 +24,6 @@ class DeleteFragment : BottomSheetDialogFragment(),View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
         arguments?.let {
             todoPosition = it.getInt(AppConstants.POSITION)
             deletingTodo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -38,6 +33,13 @@ class DeleteFragment : BottomSheetDialogFragment(),View.OnClickListener {
                 it.getParcelable(AppConstants.TODO)
             }
         }
+        setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogStyle)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         deleteFragmentBinding = FragmentDeleteBinding.inflate(inflater,container,false)
         return deleteFragmentBinding.root
     }

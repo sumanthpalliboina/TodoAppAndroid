@@ -8,6 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
@@ -39,6 +40,9 @@ import com.sumanthacademy.myapplication.ViewModel.TodoRemainder
 import com.sumanthacademy.myapplication.ViewModel.TodoViewModel
 import com.sumanthacademy.myapplication.databinding.ActivityMainBinding
 import com.sumanthacademy.myapplication.receivers.NotificationReceiver
+import com.sumanthacademy.myapplication.receivers.PositiveBtnInNotificationReceiver
+import com.sumanthacademy.myapplication.services.PositiveBtnNotificationService
+import com.sumanthacademy.myapplication.util.Helper
 import java.util.Calendar
 import java.util.Collections
 import kotlin.random.Random
@@ -53,10 +57,12 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
     private final val CHANNEL_ID = "1"
     lateinit var notificationMangerCompat:NotificationManagerCompat
     lateinit var builder:NotificationCompat.Builder
+    lateinit var positiveBtnInNotificationReceiver: PositiveBtnInNotificationReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("onCreate")
+        positiveBtnInNotificationReceiver = PositiveBtnInNotificationReceiver()
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = activityMainBinding.root
@@ -155,28 +161,56 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         snackbar.show()
     }
 
+    fun getPendingIntentUsingIntentAction(dynamicReceiverAction:String):PendingIntent{
+        val intent = Intent(dynamicReceiverAction)
+        intent.putExtra("positiveBtnClickStatus","Add Your Todos!")
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+           return PendingIntent.getBroadcast(applicationContext,Helper.INTRO_NOTIFICATION_ID,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            return PendingIntent.getBroadcast(applicationContext,Helper.INTRO_NOTIFICATION_ID,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+    }
+
+    fun getPendingIntentUsingJobIntentService(): PendingIntent{  //service will not work for pending intent of action for notification
+        val intent = Intent(this@MainActivity,PositiveBtnNotificationService::class.java)
+        PositiveBtnNotificationService.enqueueWork(applicationContext,intent)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getService(this@MainActivity,0,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            return PendingIntent.getService(this@MainActivity,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+    }
+
     fun startLocalNotification(){
-        var notificationCount = 1
         builder = NotificationCompat.Builder(this@MainActivity,CHANNEL_ID)
+        val pendingIntent = getPendingIntentUsingIntentAction("com.sumanthacademy.myapplication.SENDPOSTIVEEVENT")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID,"1",NotificationManager.IMPORTANCE_DEFAULT)
             val manager:NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
+            val mainActivityIntent = Intent(applicationContext,MainActivity::class.java).apply {
+                putExtra("FROM_NOTIFICATION",true)
+            }
             builder.setSmallIcon(R.drawable.todos_animation)
                 .setContentTitle("Do Your Todos")
                 .setContentText("If you want to manage your todos efficiently, Do it in this famous Todos App?")
                 .setLargeIcon(resources.getDrawable(R.drawable.mind).toBitmap())
-                .setContentIntent(PendingIntent.getActivity(applicationContext,0,Intent(applicationContext,MainActivity::class.java),PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+                .setContentIntent(PendingIntent.getActivity(applicationContext,0,mainActivityIntent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
                 .setAutoCancel(true)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(resources.getString(R.string.intro_notification_text)))
+                .addAction(R.drawable.todos_animation,"Add Todos",pendingIntent)
         } else {
+            val mainActivityIntent = Intent(applicationContext,MainActivity::class.java).apply {
+                putExtra("FROM_NOTIFICATION",true)
+            }
             builder.setSmallIcon(R.drawable.todos_animation)
                 .setContentTitle("Do Your Todos")
-                .setContentText("Do you want to finish your todos?")
+                .setContentText("Do you want to finish your todos?") //it will not displays if we maintain bigText for scroll
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(PendingIntent.getActivity(applicationContext,0,Intent(applicationContext,MainActivity::class.java),PendingIntent.FLAG_UPDATE_CURRENT))
+                .setContentIntent(PendingIntent.getActivity(applicationContext,0,mainActivityIntent,PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(resources.getString(R.string.intro_notification_text)))
+                .addAction(R.drawable.todos_animation,"Add Todos",pendingIntent)
         }
 
         if (ActivityCompat.checkSelfPermission(
@@ -188,7 +222,7 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
             return
         }
         with(NotificationManagerCompat.from(this@MainActivity)){
-            notify(notificationCount++,builder.build())
+            notify(Helper.INTRO_NOTIFICATION_ID,builder.build())
         }
     }
 
@@ -209,11 +243,21 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
     override fun onStart() {
         super.onStart()
         println("onStart")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(positiveBtnInNotificationReceiver, IntentFilter("com.sumanthacademy.myapplication.SENDPOSTIVEEVENT"),Context.RECEIVER_EXPORTED)
+        } else{
+            registerReceiver(positiveBtnInNotificationReceiver,IntentFilter("com.sumanthacademy.myapplication.SENDPOSTIVEEVENT"))
+        }
     }
 
     override fun onResume() {
         super.onResume()
         println("onResume")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(positiveBtnInNotificationReceiver, IntentFilter("com.sumanthacademy.myapplication.SENDPOSTIVEEVENT"),Context.RECEIVER_EXPORTED)
+        } else{
+            registerReceiver(positiveBtnInNotificationReceiver,IntentFilter("com.sumanthacademy.myapplication.SENDPOSTIVEEVENT"))
+        }
     }
 
     override fun onPause() {
@@ -224,6 +268,7 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
     override fun onStop() {
         super.onStop()
         println("onStop")
+        unregisterReceiver(positiveBtnInNotificationReceiver)
     }
 
     override fun onRestart() {
@@ -234,6 +279,7 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
     override fun onDestroy() {
         super.onDestroy()
         println("onDestroy")
+        unregisterReceiver(positiveBtnInNotificationReceiver)
     }
 
     fun setListeners(){

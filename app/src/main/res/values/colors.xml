@@ -5,4 +5,5 @@
     <color name="in_progress">#ffc40c</color>
     <color name="completed">@android:color/holo_green_dark</color>
     <color name="not_started">@android:color/holo_red_dark</color>
+    <color name="primary_color_1">#9D0605</color>
 </resources>

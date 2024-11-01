@@ -40,6 +40,12 @@
 
         <receiver android:name=".receivers.NotificationReceiver" />
 
+        <service
+            android:name=".services.PositiveBtnNotificationService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
+
+
         <!--<receiver android:name=".CustomReceiverExample" android:exported="true">
             <intent-filter>
                 <action android:name="com.sumanthacademy.myapplication.SEND_EVENT"/>
