@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -21,36 +20,40 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Second"
-            android:exported="false"
-            android:theme="@style/Theme.Second"
-            android:parentActivityName=".MainActivity"/>
+            android:name=".onBoarding.LoginActivity"
+            android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true">
+            android:name=".onBoarding.SplashActivity"
+            android:exported="true"
+            android:resizeableActivity="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="DiscouragedApi,NonResizeableActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Second"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Second" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
 
-        <service android:name=".PlayerServiceExample"/>
+        <service android:name=".PlayerServiceExample" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
 
         <service
             android:name=".services.PositiveBtnNotificationService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
-
-
-        <!--<receiver android:name=".CustomReceiverExample" android:exported="true">
-            <intent-filter>
-                <action android:name="com.sumanthacademy.myapplication.SEND_EVENT"/>
-            </intent-filter>
-        </receiver>-->
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

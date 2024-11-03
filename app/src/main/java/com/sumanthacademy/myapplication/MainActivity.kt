@@ -15,6 +15,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -39,6 +41,7 @@ import com.sumanthacademy.myapplication.ViewModel.TodoLive
 import com.sumanthacademy.myapplication.ViewModel.TodoRemainder
 import com.sumanthacademy.myapplication.ViewModel.TodoViewModel
 import com.sumanthacademy.myapplication.databinding.ActivityMainBinding
+import com.sumanthacademy.myapplication.global.BaseActivity
 import com.sumanthacademy.myapplication.receivers.NotificationReceiver
 import com.sumanthacademy.myapplication.receivers.PositiveBtnInNotificationReceiver
 import com.sumanthacademy.myapplication.services.PositiveBtnNotificationService
@@ -47,7 +50,7 @@ import java.util.Calendar
 import java.util.Collections
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListener,OnTodoDeleteClickListener,OnTodoRemainderClickListener {
+class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnTodoDeleteClickListener,OnTodoRemainderClickListener {
 
     lateinit var activityMainBinding: ActivityMainBinding
     var todoItems:ArrayList<Todo> = ArrayList<Todo>()
@@ -76,9 +79,14 @@ class MainActivity : AppCompatActivity(),View.OnClickListener,OnTodoClickListene
         activityMainBinding.todosRecyclerView.adapter = todoAdapter
 
         setListeners()
-        PopupIntro(this,packageName).showDialog(){ it ->
-            println("response from popup intro -> ${it}")
-        }
+
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                PopupIntro(this,packageName).showDialog(){ it ->
+                    println("response from popup intro -> ${it}")
+                }
+            },AppConstants.POP_INTRO_DELAY.toLong()
+        )
 
         todoViewModel = ViewModelProvider(this).get(TodoViewModel::class.java)
         todoViewModel.deletedData.observe(this){ it ->
