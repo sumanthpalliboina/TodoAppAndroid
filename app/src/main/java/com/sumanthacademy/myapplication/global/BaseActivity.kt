@@ -5,6 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sumanthacademy.myapplication.R
 
 open class BaseActivity: AppCompatActivity() {
+
+    override fun onStart() {
+        super.onStart()
+        GlobalBusUtil.getBus().register(this)
+    }
+
+    override fun onStop() {
+        GlobalBusUtil.getBus().unregister(this)
+        super.onStop()
+    }
+
     override fun startActivity(intent: Intent?) {
         super.startActivity(intent)
         overridePendingTransitionEnter()
