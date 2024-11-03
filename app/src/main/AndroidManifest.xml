@@ -20,6 +20,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:resizeableActivity="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
+            android:name=".onBoarding.WelecomeActivity"
+            android:exported="false"
+            tools:ignore="DiscouragedApi" />
+        <activity
             android:name=".onBoarding.LoginActivity"
             android:exported="false" />
         <activity
@@ -46,7 +53,7 @@
             android:configChanges="orientation|screenSize"
             android:exported="false" />
 
-        <service android:name=".PlayerServiceExample" />
+        <service android:name=".services.PlayerServiceExample" />
 
         <receiver android:name=".receivers.NotificationReceiver" />
 

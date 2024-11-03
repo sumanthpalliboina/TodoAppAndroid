@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="btnTextSize">18sp</dimen>
+    <dimen name="btn_elevation_12">14dp</dimen>
+    <dimen name="margin10dp">10dp</dimen>
+    <dimen name="margin20dp">20dp</dimen>
+    <dimen name="margin30dp">30dp</dimen>
+    <dimen name="margin40dp">40dp</dimen>
+    <dimen name="margin50dp">50dp</dimen>
+    <dimen name="margin60dp">60dp</dimen>
+</resources>

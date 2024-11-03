@@ -11,4 +11,9 @@
     <string name="intro_title">Todo App</string>
     <string name="update_todo_hint">Status is either inProgress or Completed or Not Started Yet</string>
     <string name="intro_notification_text">If you want to manage your todos efficiently, Do it in this famous Todos App?</string>
+    <string name="login_btn_text">Login</string>
+    <string name="register_btn_text">Register</string>
+    <string name="remainder_text">You can set the alarm remainder \n in app to notify action todo \n with phone notifications</string>
+    <string name="add_text">You can add the todos \n in app by click add button action</string>
+    <string name="delete_text">You can delete the todos \n in app by click delete action</string>
 </resources>

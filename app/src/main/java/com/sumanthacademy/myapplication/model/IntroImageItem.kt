@@ -1,4 +1,4 @@
-package com.sumanthacademy.myapplication
+package com.sumanthacademy.myapplication.model
 
 data class IntroImageItem(
     val id:String,

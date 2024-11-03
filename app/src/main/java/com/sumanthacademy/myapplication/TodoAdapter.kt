@@ -4,27 +4,28 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.sumanthacademy.myapplication.interfaces.OnTodoClickListener
+import com.sumanthacademy.myapplication.interfaces.OnTodoDeleteClickListener
+import com.sumanthacademy.myapplication.interfaces.OnTodoRemainderClickListener
+import com.sumanthacademy.myapplication.model.Todo
+import com.sumanthacademy.myapplication.util.setSafeOnClickListener
 
 class TodoAdapter(
     val context: Context,
     val itemsList:ArrayList<Todo>,
-    private var todoClickListener:OnTodoClickListener,
-    private var onDeleteTodoClickListener:OnTodoDeleteClickListener,
-    private var onTodoRemainderClickListener:OnTodoRemainderClickListener
+    private var todoClickListener: OnTodoClickListener,
+    private var onDeleteTodoClickListener: OnTodoDeleteClickListener,
+    private var onTodoRemainderClickListener: OnTodoRemainderClickListener
     ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class TodoViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
@@ -176,12 +177,12 @@ class TodoAdapter(
         return itemsList.size
     }
 
-    fun addTodo(newTodo:Todo) {
+    fun addTodo(newTodo: Todo) {
         /*this.itemsList.add(newTodo)*/
         notifyDataSetChanged()
     }
 
-    fun editTodo(position: Int,updatedTodo:Todo){
+    fun editTodo(position: Int,updatedTodo: Todo){
         /*this.itemsList[position].title = updatedTodo.title.toString()
         this.itemsList[position].status = updatedTodo.status.toString()*/
         notifyItemChanged(position)

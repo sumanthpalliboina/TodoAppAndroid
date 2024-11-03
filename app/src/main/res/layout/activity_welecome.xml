@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    tools:context=".onBoarding.WelecomeActivity">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.rd.PageIndicatorView
+        app:piv_animationType="thinWorm"
+        app:piv_interactiveAnimation="true"
+        app:piv_padding="12dp"
+        app:piv_radius="5dp"
+        app:piv_viewPager="@id/viewPager"
+        app:piv_dynamicCount="true"
+        app:piv_selectedColor="@android:color/holo_green_dark"
+        app:piv_unselectedColor="@android:color/black"
+        android:layout_marginStart="@dimen/margin20dp"
+        android:layout_marginBottom="@dimen/margin30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/loginBtn"
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/loginBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/registerBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/btnStyleWhiteBgRoundedCorners"
+        android:layout_marginStart="@dimen/margin20dp"
+        android:layout_marginEnd="@dimen/margin20dp"
+        android:layout_marginBottom="@dimen/margin50dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/btnText16sp"
+        android:text="@string/login_btn_text"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/loginBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/btnStyleWhiteBgRoundedCorners"
+        android:layout_marginEnd="@dimen/margin20dp"
+        android:layout_marginBottom="@dimen/margin50dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/btnText16sp"
+        android:text="@string/register_btn_text"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

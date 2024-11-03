@@ -6,7 +6,7 @@ class GlobalBusUtil {
     companion object {
         var bus:EventBus? = null
 
-        fun getBus(): EventBus {
+        fun getEventBus(): EventBus {
             if (bus == null) {
                 bus = EventBus.getDefault()
             }

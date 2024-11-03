@@ -1,4 +1,4 @@
-package com.sumanthacademy.myapplication
+package com.sumanthacademy.myapplication.util
 
 class AppConstants {
     companion object{

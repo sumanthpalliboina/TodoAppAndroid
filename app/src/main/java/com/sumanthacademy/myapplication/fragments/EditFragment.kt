@@ -1,18 +1,17 @@
-package com.sumanthacademy.myapplication
+package com.sumanthacademy.myapplication.fragments
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
-import android.widget.EditText
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.sumanthacademy.myapplication.MainActivity
+import com.sumanthacademy.myapplication.model.Todo
 import com.sumanthacademy.myapplication.databinding.FragmentEditBinding
+import com.sumanthacademy.myapplication.util.AppConstants
 
 class EditFragment : DialogFragment(), View.OnClickListener {
 
@@ -77,7 +76,9 @@ class EditFragment : DialogFragment(), View.OnClickListener {
                 var updatedTitle = b.title.text.toString()
                 var updatedStatus = b.status.text.toString()
                 var position = requireArguments().getInt(AppConstants.POSITION)
-                (activity as MainActivity).editAndSaveTodo(position,Todo(null,updatedTitle,updatedStatus))
+                (activity as MainActivity).editAndSaveTodo(position,
+                    Todo(null,updatedTitle,updatedStatus)
+                )
                 dismiss()
             }
         }

@@ -1,8 +1,9 @@
-package com.sumanthacademy.myapplication
+package com.sumanthacademy.myapplication.util
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Array
+import com.sumanthacademy.myapplication.App
+import com.sumanthacademy.myapplication.model.Todo
 
 class SPUtil {
     companion object{

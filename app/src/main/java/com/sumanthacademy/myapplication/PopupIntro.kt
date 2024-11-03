@@ -2,6 +2,7 @@ package com.sumanthacademy.myapplication
 
 import android.app.Dialog
 import android.content.Context
+import android.content.pm.ActivityInfo.WindowLayout
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.sumanthacademy.myapplication.adapter.IntroImageAdapter
 import com.sumanthacademy.myapplication.databinding.PopupIntroBinding
+import com.sumanthacademy.myapplication.model.IntroImageItem
 import java.util.UUID
 
 class PopupIntro(val fcontext: Context, val packageName:String):Dialog(fcontext),View.OnClickListener {
@@ -49,6 +51,7 @@ class PopupIntro(val fcontext: Context, val packageName:String):Dialog(fcontext)
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
+
         window?.setGravity(Gravity.CENTER)
         val metrics = DisplayMetrics()
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager

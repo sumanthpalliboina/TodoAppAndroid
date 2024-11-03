@@ -8,6 +8,8 @@
     android:background="@drawable/todo_splash"
     tools:context=".onBoarding.SplashActivity">
 
+    <!--Theme style maintained in AndroidManifestFile for full screen without status bar-->
+
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/todosAnimeImg"
         android:visibility="visible"

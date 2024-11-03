@@ -8,7 +8,7 @@
     android:background="@drawable/bottom_sheet_bg"
     android:backgroundTintMode="screen"
     android:backgroundTint="@color/white"
-    tools:context=".DeleteFragment">
+    tools:context=".fragments.DeleteFragment">
 
     <LinearLayout
         android:orientation="vertical"

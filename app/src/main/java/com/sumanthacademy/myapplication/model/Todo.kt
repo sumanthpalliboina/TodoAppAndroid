@@ -1,4 +1,4 @@
-package com.sumanthacademy.myapplication
+package com.sumanthacademy.myapplication.model
 
 import android.os.Parcel
 import android.os.Parcelable

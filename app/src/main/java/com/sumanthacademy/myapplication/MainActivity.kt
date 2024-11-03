@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -22,14 +21,12 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,16 +38,26 @@ import com.sumanthacademy.myapplication.ViewModel.TodoLive
 import com.sumanthacademy.myapplication.ViewModel.TodoRemainder
 import com.sumanthacademy.myapplication.ViewModel.TodoViewModel
 import com.sumanthacademy.myapplication.databinding.ActivityMainBinding
+import com.sumanthacademy.myapplication.fragments.DeleteFragment
+import com.sumanthacademy.myapplication.fragments.EditFragment
 import com.sumanthacademy.myapplication.global.BaseActivity
+import com.sumanthacademy.myapplication.interfaces.OnTodoClickListener
+import com.sumanthacademy.myapplication.interfaces.OnTodoDeleteClickListener
+import com.sumanthacademy.myapplication.interfaces.OnTodoRemainderClickListener
+import com.sumanthacademy.myapplication.model.Todo
 import com.sumanthacademy.myapplication.receivers.NotificationReceiver
 import com.sumanthacademy.myapplication.receivers.PositiveBtnInNotificationReceiver
 import com.sumanthacademy.myapplication.services.PositiveBtnNotificationService
+import com.sumanthacademy.myapplication.util.AppConstants
 import com.sumanthacademy.myapplication.util.Helper
+import com.sumanthacademy.myapplication.util.SPUtil
+import com.sumanthacademy.myapplication.util.setExactHrAndMinute
+import org.greenrobot.eventbus.Subscribe
 import java.util.Calendar
 import java.util.Collections
-import kotlin.random.Random
 
-class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnTodoDeleteClickListener,OnTodoRemainderClickListener {
+class MainActivity : BaseActivity(),View.OnClickListener, OnTodoClickListener,
+    OnTodoDeleteClickListener, OnTodoRemainderClickListener {
 
     lateinit var activityMainBinding: ActivityMainBinding
     var todoItems:ArrayList<Todo> = ArrayList<Todo>()
@@ -85,7 +92,7 @@ class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnT
                 PopupIntro(this,packageName).showDialog(){ it ->
                     println("response from popup intro -> ${it}")
                 }
-            },AppConstants.POP_INTRO_DELAY.toLong()
+            }, AppConstants.POP_INTRO_DELAY.toLong()
         )
 
         todoViewModel = ViewModelProvider(this).get(TodoViewModel::class.java)
@@ -146,10 +153,10 @@ class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnT
             dialogBuilder.setTitle("Empty Input")
             dialogBuilder.setIcon(R.drawable.baseline_warning_24)
             dialogBuilder.setMessage("Please Provide Your input")
-            dialogBuilder.setPositiveButton("Ok",DialogInterface.OnClickListener{dialog,which ->
+            dialogBuilder.setPositiveButton("Ok",DialogInterface.OnClickListener{dialog,_ ->
                 dialog.dismiss()
             })
-            dialogBuilder.setNegativeButton("Cancel",DialogInterface.OnClickListener{dialog,which ->
+            dialogBuilder.setNegativeButton("Cancel",DialogInterface.OnClickListener{dialog,_ ->
                 showSnackbar()
                 dialog.dismiss()
             })
@@ -317,13 +324,13 @@ class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnT
             val fragmentManager = supportFragmentManager
             val editFragment = EditFragment.newInstance(position,item.title.toString() ?: "default",item.status.toString() ?: "default")
             if (fragmentManager != null){
-                editFragment.show(fragmentManager,EditFragment.TAG)
+                editFragment.show(fragmentManager, EditFragment.TAG)
                 editFragment.isCancelable = false
             }
         }
     }
 
-    fun editAndSaveTodo(position: Int,todo:Todo){
+    fun editAndSaveTodo(position: Int,todo: Todo){
         this.todoItems[position].title = todo.title.toString()
         this.todoItems[position].status = todo.status.toString()
         todoAdapter.editTodo(position,todo)
@@ -336,7 +343,7 @@ class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnT
             val fragmentManager = supportFragmentManager
             val deleteFragment = DeleteFragment.newInstance(position,item)
             if (fragmentManager != null) {
-                deleteFragment.show(fragmentManager,DeleteFragment.TAG)
+                deleteFragment.show(fragmentManager, DeleteFragment.TAG)
                 //deleteFragment.isCancelable = false
             }
         }
@@ -383,7 +390,7 @@ class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnT
         dialog.show()
     }
 
-    fun setTodoRemainderTimeWithBroadcast(todo:Todo, hour:Int, minute:Int){
+    fun setTodoRemainderTimeWithBroadcast(todo: Todo, hour:Int, minute:Int){
         var calendar = Calendar.getInstance()
         calendar = calendar.setExactHrAndMinute(hour,minute)
         val intent = Intent(applicationContext,NotificationReceiver::class.java)
@@ -416,5 +423,6 @@ class MainActivity : BaseActivity(),View.OnClickListener,OnTodoClickListener,OnT
             setTodoRemainderTimeWithBroadcast(item,timePicker.hour, timePicker.minute)
         }
     }
+
 
 }

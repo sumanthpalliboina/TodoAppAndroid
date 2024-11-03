@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.sumanthacademy.myapplication.IntroImageItem
+import com.sumanthacademy.myapplication.model.IntroImageItem
 import com.sumanthacademy.myapplication.R
 
 class IntroImageAdapter: ListAdapter<IntroImageItem, IntroImageAdapter.ViewHolder>(DiffCallback()) {
@@ -29,7 +29,7 @@ class IntroImageAdapter: ListAdapter<IntroImageItem, IntroImageAdapter.ViewHolde
         var introImage = itemView.findViewById<ImageView>(R.id.introImage)
         var imageTitle = itemView.findViewById<AppCompatTextView>(R.id.title)
 
-        fun bindData(item:IntroImageItem){
+        fun bindData(item: IntroImageItem){
             imageTitle?.let{
                 it.text = item.title.toString()
             }

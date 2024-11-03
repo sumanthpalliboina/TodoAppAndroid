@@ -70,6 +70,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.greenrobot/eventbus
     implementation("org.greenrobot:eventbus:3.2.0")
 
+    implementation("com.github.romandanylyk:PageIndicatorView:v1.0.1")
+
     /*implementation("com.android.support:appcompat-v7:27.1.1")
     implementation("com.android.support:recyclerview-v7:27.1.1")
     implementation("com.android.support:support-core-ui:27.1.1")*/
