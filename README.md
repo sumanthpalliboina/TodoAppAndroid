@@ -6,3 +6,4 @@
 6)Screenshots and screen record is prevented
 7)Implemented splash activity with post delayed of Handler(Looper.getMainLooper())
 8)Implemented enter ans exit trasition enimation for activity
+9)WELECOME page after splash to tell the user about main app features with slide fragments using FragmentStateAdapter for view pager adapter
